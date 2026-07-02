@@ -26,14 +26,14 @@ export default function DirectSupport() {
   };
 
   return (
-    <section className="bg-[#ecf0ef] py-16 lg:py-24 overflow-hidden font-sans">
+    <section className="bg-[#ecf0ef] py-10 md:py-16 lg:py-24 overflow-hidden font-sans">
       <div className="max-w-7xl mx-auto px-6 mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl lg:text-5xl font-black text-[#005840] mb-4"
+            className="text-3xl md:text-4xl font-bold tracking-tight text-[#005840] mb-4"
           >
             Direct Community Support
           </motion.h2>
@@ -52,14 +52,14 @@ export default function DirectSupport() {
         <div className="flex gap-3">
           <button 
             onClick={scrollLeft}
-            className="bg-white text-[#005840] hover:bg-[#d1f843] shadow-sm rounded-full p-3 transition-colors border border-[#005840]/10 flex items-center justify-center cursor-pointer"
+            className="bg-white text-[#005840] hover:bg-[#d1f843] shadow-sm rounded-full p-3 min-h-[44px] min-w-[44px] transition-colors border border-[#005840]/10 flex items-center justify-center cursor-pointer"
             aria-label="Scroll left"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           <button 
             onClick={scrollRight}
-            className="bg-white text-[#005840] hover:bg-[#d1f843] shadow-sm rounded-full p-3 transition-colors border border-[#005840]/10 flex items-center justify-center cursor-pointer"
+            className="bg-white text-[#005840] hover:bg-[#d1f843] shadow-sm rounded-full p-3 min-h-[44px] min-w-[44px] transition-colors border border-[#005840]/10 flex items-center justify-center cursor-pointer"
             aria-label="Scroll right"
           >
             <ChevronRight className="w-6 h-6" />
@@ -80,17 +80,17 @@ export default function DirectSupport() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="min-w-[280px] md:min-w-[350px] max-w-[350px] bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-transparent hover:border-[#d1f843] hover:shadow-lg hover:-translate-y-2 transition-all duration-300 snap-start flex flex-col cursor-pointer group shrink-0"
+              className="min-w-[240px] md:min-w-[350px] max-w-[85vw] md:max-w-[350px] bg-white rounded-[2rem] p-4 md:p-8 shadow-sm border border-transparent hover:border-[#d1f843] hover:shadow-lg hover:-translate-y-2 transition-all duration-300 snap-start flex flex-col cursor-pointer group shrink-0"
             >
-              <div className="bg-[#d1f843] text-[#005840] font-bold text-xs px-3 py-1 rounded-full w-fit mb-6">
+              <div className="bg-[#d1f843] text-[#005840] font-bold text-[10px] px-3 py-1 rounded-full w-fit mb-4">
                 {intervention.category}
               </div>
               
-              <h3 className="text-xl font-bold text-[#005840] mb-3">
+              <h3 className="text-lg md:text-xl font-bold text-[#005840] mb-2">
                 {intervention.title}
               </h3>
               
-              <p className="text-[#005840]/80 leading-relaxed text-sm flex-grow font-medium">
+              <p className="text-[#005840]/80 leading-relaxed text-xs md:text-sm flex-grow font-medium">
                 {intervention.text}
               </p>
               

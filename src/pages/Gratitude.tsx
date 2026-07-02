@@ -49,7 +49,7 @@ export default function Gratitude() {
   const getTierDetails = () => ({ name: 'Supporter', icon: Leaf, color: 'text-[#005840]', bg: 'bg-transparent', border: 'border-[#005840]/30' });
 
   return (
-    <div className="w-full min-h-screen bg-[#ecf0ef] pt-20 px-4 md:pt-32 md:px-8 pb-32 relative font-sans overflow-hidden">
+    <div className="w-full min-h-screen bg-[#ecf0ef] pt-32 md:pt-40 px-4 md:px-8 pb-32 relative font-sans overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
         
         {/* Header Section */}
@@ -58,7 +58,7 @@ export default function Gratitude() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
-            className="text-3xl font-extrabold tracking-tight md:text-5xl text-[#005840] mb-4 drop-shadow-sm"
+            className="text-3xl font-extrabold tracking-tight md:text-5xl text-[#005840] mb-4"
           >
             The People of Raahat
           </motion.h1>
@@ -77,17 +77,17 @@ export default function Gratitude() {
           <h2 className="text-xl md:text-3xl font-extrabold text-[#005840] mb-4">Our Founding Community</h2>
           <p className="text-lg md:text-xl text-[#005840]/80 mb-12">These are the people whose early trust made Raahat's first decade possible.</p>
           
-          <div className="grid grid-cols-4 gap-1.5 md:gap-8 md:grid-cols-3 lg:grid-cols-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6">
             {coreTeam.map((name, i) => (
               <motion.div 
                 key={name}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className="bg-white rounded-lg md:rounded-[2rem] p-1.5 md:p-8 shadow-sm transition-all flex flex-col items-center justify-center text-center relative overflow-hidden aspect-square md:aspect-auto"
+                className="bg-white rounded-[1rem] md:rounded-[2rem] p-3 md:p-6 shadow-sm transition-all flex flex-col items-center justify-center text-center"
               >
-                <h3 className="text-xs md:text-lg font-bold text-[#005840]">{name}</h3>
-                <span className="text-[10px] uppercase tracking-widest text-[#005840]/60 font-bold mt-2">PILLAR</span>
+                <h3 className="text-[11px] md:text-base font-bold text-[#005840] leading-tight break-words text-balance">{name}</h3>
+                <span className="text-[8px] md:text-[10px] uppercase tracking-widest text-[#005840]/60 font-bold mt-1 md:mt-2">PILLAR</span>
               </motion.div>
             ))}
           </div>
@@ -95,7 +95,7 @@ export default function Gratitude() {
 
         {/* Section 2: The Unified Donor Grid */}
         <div className="mb-20">
-          <div className="grid grid-cols-4 gap-1.5 md:gap-8 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6">
             {filteredDonors.map((donor, i) => (
               <motion.div 
                 key={donor.name}
@@ -103,10 +103,10 @@ export default function Gratitude() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: (i % 8) * 0.05 }}
-                className="bg-white rounded-lg md:rounded-[2rem] p-4 md:p-8 shadow-sm transition-all flex flex-col items-center justify-center text-center aspect-square md:aspect-auto"
+                className="bg-white rounded-[1rem] md:rounded-[2rem] p-3 md:p-6 shadow-sm transition-all flex flex-col items-center justify-center text-center"
               >
-                <h3 className="text-xs md:text-lg font-bold text-[#005840] mb-2">{donor.name}</h3>
-                <span className="text-[10px] uppercase tracking-widest text-[#005840]/60 font-bold">SUPPORTER</span>
+                <h3 className="text-[11px] md:text-base font-bold text-[#005840] mb-1 md:mb-2 leading-tight break-words text-balance">{donor.name}</h3>
+                <span className="text-[8px] md:text-[10px] uppercase tracking-widest text-[#005840]/60 font-bold">SUPPORTER</span>
               </motion.div>
             ))}
           </div>

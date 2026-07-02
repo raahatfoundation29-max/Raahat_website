@@ -3,55 +3,24 @@ import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'motion/
 import { useState, useRef, useEffect } from 'react';
 import { Users, Menu, X, ChevronDown, Image } from 'lucide-react';
 
-// ── Primary nav links (5 items) ──────────────────────────────────────────────
+// ── Primary nav links (6 items) ──────────────────────────────────────────────
 const primaryLinks = [
   { name: 'Home',            path: '/' },
   { name: 'Our Work',        path: '/work' },
-  { name: 'About',           path: '/about',       hasDropdown: true },
-  { name: 'Our People',  path: '/our-people' },
+  { name: 'Gallery',         path: '/gallery' },
+  { name: 'About',           path: '/about' },
+  { name: 'Our People',      path: '/our-people' },
   { name: 'Contact',         path: '/contact' },
 ];
 
 // ── Sub-items under "About" ───────────────────────────────────────────────────
-const aboutDropdownItems = [
-  { name: 'About Us',  path: '/about',   icon: null },
-  { name: 'Gallery',   path: '/gallery', icon: Image },
-];
+// DEPRECATED: About dropdown logic removed.
 
 export default function Navbar() {
   const location    = useLocation();
 
   const [isScrolled,       setIsScrolled]       = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAboutOpen,      setIsAboutOpen]      = useState(false);
-
-  const aboutRef = useRef<HTMLDivElement>(null);
-  const { scrollY } = useScroll();
-
-  // Shrink on scroll
-  useMotionValueEvent(scrollY, 'change', (latest) => {
-    setIsScrolled(latest > 50);
-  });
-
-  // Close About dropdown when clicking outside
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (aboutRef.current && !aboutRef.current.contains(e.target as Node)) {
-        setIsAboutOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
-  // Close mobile menu on route change
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-    setIsAboutOpen(false);
-  }, [location.pathname]);
-
-  // Helpers
-  const isAboutActive = location.pathname === '/about' || location.pathname === '/gallery';
 
   const inputCls = (path: string) =>
     `relative text-xs font-bold uppercase tracking-widest transition-colors pb-1 group ${
@@ -66,78 +35,20 @@ export default function Navbar() {
       animate={{ y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       className={`sticky top-0 z-40 w-full bg-[#005840] border-b border-white/5 transition-all duration-300 ${
-        isScrolled ? 'py-2 px-5 md:px-8 shadow-xl' : 'py-4 px-5 md:py-6 md:px-8'
+        isScrolled ? 'py-2 px-5 md:px-8 shadow-xl' : 'py-4 px-5 md:py-4 md:px-8'
       }`}
     >
       <div className="mx-auto flex h-auto max-w-7xl items-center justify-between">
 
         {/* ── Wordmark ── */}
         <Link to="/" className="flex items-center gap-2 group flex-shrink-0">
-          <span className="text-2xl font-black tracking-tighter text-white drop-shadow-sm">
-            RAAHAT<span className="text-[#d1f843]">.</span>
-          </span>
+          <img src="https://res.cloudinary.com/dri0jvjdw/image/upload/v1782988612/raahat_logo_text_white_vgm3yt.png" alt="Raahat Foundation Logo" className="h-12 md:h-14 lg:h-16 w-auto object-contain" />
         </Link>
 
-        {/* ── Desktop Nav ── */}
-        <div className="hidden md:flex items-center justify-end flex-1 gap-6 ml-8">
-          <nav className="flex items-center gap-6">
-            {primaryLinks.map((link) => {
-              if (link.hasDropdown) {
-                // ── About dropdown ──
-                return (
-                  <div key={link.name} className="relative" ref={aboutRef}>
-                    <button
-                      onClick={() => setIsAboutOpen((o) => !o)}
-                      className={`flex items-center gap-1 text-xs font-bold uppercase tracking-widest transition-colors pb-1 ${
-                        isAboutActive
-                          ? 'text-white border-b-2 border-[#d1f843]'
-                          : 'text-white/80 hover:text-white border-b-2 border-transparent'
-                      }`}
-                    >
-                      {link.name}
-                      <ChevronDown
-                        className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                          isAboutOpen ? 'rotate-180' : 'rotate-0'
-                        }`}
-                      />
-                    </button>
-
-                    <AnimatePresence>
-                      {isAboutOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 8, scale: 0.97 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 8, scale: 0.97 }}
-                          transition={{ duration: 0.18, ease: 'easeOut' }}
-                          className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-44 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50"
-                        >
-                          {aboutDropdownItems.map(({ name, path, icon: Icon }) => (
-                            <Link
-                              key={name}
-                              to={path}
-                              onClick={() => setIsAboutOpen(false)}
-                              className={`flex items-center gap-2.5 px-4 py-3 text-sm font-semibold transition-colors ${
-                                location.pathname === path
-                                  ? 'bg-[#005840]/8 text-[#005840]'
-                                  : 'text-gray-700 hover:bg-gray-50 hover:text-[#005840]'
-                              }`}
-                            >
-                              {Icon && <Icon className="w-4 h-4 opacity-60" />}
-                              {name}
-                              {location.pathname === path && (
-                                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#d1f843]" />
-                              )}
-                            </Link>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                );
-              }
-
-              // ── Regular link ──
-              return (
+          {/* ── Desktop Nav ── */}
+          <div className="hidden md:flex items-center justify-end flex-1 gap-6 ml-8">
+            <nav className="flex items-center gap-6">
+              {primaryLinks.map((link) => (
                 <Link
                   key={link.name}
                   to={link.path}
@@ -145,18 +56,18 @@ export default function Navbar() {
                 >
                   {link.name}
                 </Link>
-              );
-            })}
-          </nav>
+              ))}
+            </nav>
 
-          {/* Desktop Get Involved CTA */}
-          <Link
-            to="/get-involved"
-            className="group relative flex items-center justify-center gap-2 px-6 py-3 bg-[#d1f843] text-[#005840] text-xs font-bold uppercase tracking-widest rounded-full hover:brightness-95 hover:scale-105 active:scale-95 transition-all duration-300 shadow-[0_4px_12px_rgba(209,248,67,0.2)]"
-          >
-            <span className="relative z-10">GET INVOLVED →</span>
-          </Link>
-        </div>
+            {/* Desktop Get Involved CTA */}
+            <Link
+              to="/get-involved"
+              className="group relative flex items-center justify-center gap-2 px-6 py-3 bg-[#d1f843] text-[#005840] text-xs font-bold uppercase tracking-widest rounded-full hover:brightness-95 hover:scale-105 active:scale-95 transition-all duration-300 shadow-[0_4px_12px_rgba(209,248,67,0.2)]"
+            >
+              <span className="relative z-10">GET INVOLVED →</span>
+            </Link>
+          </div>
+
 
         {/* ── Mobile: Get Involved + Hamburger (always visible) ── */}
         <div className="flex md:hidden items-center gap-2">
@@ -179,50 +90,67 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ── Mobile Dropdown Menu (Full-screen overlay) ── */}
+      {/* ── Mobile Menu (Compact Dropdown) ── */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[60] bg-white flex flex-col p-5 md:hidden"
-          >
-            {/* Close Button */}
-            <div className="flex justify-end mb-8">
-              <button
-                className="w-12 h-12 flex items-center justify-center text-[#005840] hover:bg-gray-100 rounded-full transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-                aria-label="Close menu"
-              >
-                <X className="w-8 h-8" />
-              </button>
-            </div>
-
-            {/* Nav Links */}
-            <nav className="flex-1 flex flex-col">
-              {primaryLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center text-2xl font-bold py-4 min-h-[56px] text-[#005840] border-b border-gray-100"
-                >
-                  {link.name}
-                </Link>
-              ))}
-            </nav>
-
-            {/* Bottom CTA */}
-            <Link
-              to="/get-involved"
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full py-5 bg-[#d1f843] text-[#005840] text-center font-bold text-lg uppercase tracking-widest rounded-2xl shadow-lg mt-auto"
+              className="fixed inset-0 z-[40] bg-black/50 backdrop-blur-sm md:hidden"
+            />
+            {/* Dropdown Panel */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="fixed inset-x-0 top-0 z-[50] m-4 rounded-[2rem] shadow-2xl bg-white overflow-hidden md:hidden"
             >
-              GET INVOLVED →
-            </Link>
-          </motion.div>
+              <div className="flex justify-end p-4 md:p-6">
+                <button
+                  className="w-12 h-12 flex items-center justify-center text-[#005840] hover:bg-gray-100 rounded-full transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  aria-label="Close menu"
+                >
+                  <X className="w-8 h-8" />
+                </button>
+              </div>
+
+              <nav className="flex flex-col gap-2 px-6 py-4">
+                {primaryLinks.map((link) => {
+                  const isActive = location.pathname === link.path;
+                  return (
+                    <Link
+                      key={link.name}
+                      to={link.path}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`px-4 py-3 rounded-xl text-lg font-bold transition-all ${
+                        isActive 
+                          ? 'bg-[#005840] text-[#d1f843] shadow-md' 
+                          : 'text-[#005840]/70 hover:bg-[#ecf0ef] hover:text-[#005840]'
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              {/* Bottom CTA */}
+              <div className="px-6 py-6">
+                <Link
+                  to="/get-involved"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block w-full py-4 text-center bg-[#d1f843] text-[#005840] font-extrabold uppercase tracking-widest text-sm rounded-full shadow-sm active:scale-95 transition-all"
+                >
+                  GET INVOLVED →
+                </Link>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </motion.header>

@@ -97,7 +97,7 @@ export default function Work() {
   });
 
   return (
-    <div className="w-full min-h-screen bg-[#ecf0ef] pt-24 md:pt-32 pb-16 md:pb-24 px-4 md:px-8">
+    <div className="w-full min-h-screen bg-[#ecf0ef] pt-32 md:pt-40 pb-16 md:pb-24 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         
         {/* Header */}
@@ -106,10 +106,10 @@ export default function Work() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-10 md:mb-16 pt-4 md:pt-8"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#005840] mb-2">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#005840] mb-2">
             Our Works
           </h1>
-          <p className="text-sm md:text-lg text-[#005840]/80 max-w-2xl mx-auto mb-6">
+          <p className="text-xs md:text-lg text-[#005840]/80 max-w-xl mx-auto mb-6">
             Every initiative is documented, receipted, and reported publicly. Scroll through 10 years of direct community work.
           </p>
 
@@ -120,13 +120,13 @@ export default function Work() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by keyword…"
-              className="w-full pl-10 pr-4 py-3 bg-white rounded-xl shadow-sm border border-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-[#005840]/20 focus:border-[#005840]/20 transition-all text-[#005840] font-medium"
+              className="w-full pl-10 pr-4 py-3 bg-white rounded-xl shadow-sm border border-gray-100 text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-[#005840]/20 focus:border-[#005840]/20 transition-all text-[#005840] font-medium"
             />
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#005840]/40" />
           </div>
           
           {/* Impact Summary Bar */}
-          <div className="grid grid-cols-2 gap-4 justify-center items-center mt-6 md:flex md:flex-row md:gap-8">
+          <div className="grid grid-cols-4 gap-2 md:flex md:flex-row md:justify-center md:gap-8 mt-6 w-full">
             {[
               { label: 'Initiatives', value: '27' },
               { label: 'Years', value: '10' },
@@ -137,8 +137,8 @@ export default function Work() {
                 key={metric.label}
                 className="flex flex-col items-center border-b-2 border-[#d1f843] pb-1 w-full md:w-fit"
               >
-                <div className="text-2xl md:text-3xl font-bold text-[#005840]">{metric.value}</div>
-                <div className="text-[11px] md:text-[12px] font-bold text-[#005840] uppercase tracking-widest">{metric.label}</div>
+                <div className="text-base md:text-3xl font-bold text-[#005840]">{metric.value}</div>
+                <div className="text-[7px] md:text-xs font-bold text-[#005840] uppercase tracking-widest">{metric.label}</div>
               </div>
             ))}
           </div>
@@ -153,15 +153,15 @@ export default function Work() {
             className="flex flex-nowrap overflow-x-auto gap-2 w-full pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
           >
             {['Latest', 'Medical Aid', 'Education', 'Vocational', 'Disaster Relief', 'Food & Nutrition', 'Spiritual & Community', 'All'].map((filterName) => (
-              <button
-                key={filterName}
-                onClick={() => setActiveFilter(filterName)}
-                className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer whitespace-nowrap ${
-                  activeFilter === filterName
-                    ? 'bg-[#005840] text-[#d1f843] shadow-md'
-                    : 'bg-white text-[#005840] hover:bg-[#005840]/5 border border-[#005840]/5 shadow-sm'
-                }`}
-              >
+                <button
+                  key={filterName}
+                  onClick={() => setActiveFilter(filterName)}
+                  className={`px-4 py-1.5 rounded-full text-xs md:text-sm font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer whitespace-nowrap ${
+                    activeFilter === filterName
+                      ? 'bg-[#005840] text-[#d1f843] shadow-md'
+                      : 'bg-white text-[#005840] hover:bg-[#005840]/5 border border-[#005840]/5 shadow-sm'
+                  }`}
+                >
                 {filterName}
               </button>
             ))}
@@ -180,8 +180,8 @@ export default function Work() {
             {/* Featured Grid (Initiatives #27, #26, #25) */}
             {featuredEvents.length > 0 && (
               <div className="mb-12">
-                <div className="border-b border-[#005840]/10 pb-4 mb-6">
-                  <h2 className="text-sm md:text-base font-bold uppercase tracking-widest text-[#005840] flex items-center gap-2">
+                <div className="border-b border-[#005840]/10 pb-4 mb-3 md:mb-6">
+                  <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#005840] flex items-center gap-2">
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
@@ -193,7 +193,7 @@ export default function Work() {
                   {featuredEvents.map((event, index) => (
                     <motion.div 
                       key={event.id}
-                      className="w-[85vw] md:w-full snap-center shrink-0"
+                      className="w-[70vw] md:w-full snap-center shrink-0"
                       initial={{ opacity: 0, y: 30 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-50px" }}
@@ -202,8 +202,8 @@ export default function Work() {
                     >
                       <Link to={`/work/${event.id}`} className="flex flex-col bg-white rounded-2xl md:rounded-[2rem] overflow-hidden shadow-md hover:shadow-lg transition-all group h-full">
                         {/* Image (Taller Aspect Ratio) */}
-                        <div className="relative w-full aspect-video md:aspect-[4/3] overflow-hidden bg-[#ecf0ef] shrink-0">
-                          <img src={event.image} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <div className="relative w-full aspect-video md:aspect-[4/3] overflow-hidden bg-white shrink-0">
+                          <img src={event.image} alt={event.title} className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500" />
                           
                           {/* Category Badge */}
                           <div className="absolute top-2 left-2 md:top-4 md:left-4 bg-[#d1f843] text-[#005840] font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full text-[8px] md:text-[10px] uppercase tracking-widest shadow-sm">
@@ -221,10 +221,10 @@ export default function Work() {
                         </div>
 
                         {/* Text Content */}
-                        <div className="p-4 md:p-6 flex flex-col flex-grow justify-between relative">
+                        <div className="p-3 md:p-6 flex flex-col flex-grow justify-between relative">
                           <div>
-                            <div className="text-[9px] md:text-xs font-bold text-[#005840]/60 mb-1.5 uppercase tracking-wider">{event.date}</div>
-                            <h3 className="text-sm md:text-lg font-bold text-[#005840] leading-tight line-clamp-2">
+                            <div className="text-[8px] md:text-xs font-bold text-[#005840]/60 mb-1.5 uppercase tracking-wider">{event.date}</div>
+                            <h3 className="text-xs md:text-lg font-bold text-[#005840] leading-tight line-clamp-2">
                               {event.title}
                             </h3>
                             <p className="hidden md:block text-sm text-[#005840]/80 mt-3 line-clamp-4 font-medium">
@@ -275,8 +275,8 @@ export default function Work() {
                     >
                       <Link to={`/work/${event.id}`} className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group h-full">
                         {/* Image */}
-                        <div className="relative w-full h-28 md:h-48 overflow-hidden bg-[#ecf0ef] shrink-0">
-                          <img src={event.image} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <div className="relative w-full h-28 md:h-48 overflow-hidden bg-white shrink-0">
+                          <img src={event.image} alt={event.title} className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500" />
                           
                           {/* Category Badge */}
                           <div className="absolute top-2 left-2 bg-[#d1f843] text-[#005840] font-bold px-2 py-1 rounded-full text-[8px] uppercase tracking-widest shadow-sm">
