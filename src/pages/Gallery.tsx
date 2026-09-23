@@ -1,110 +1,61 @@
 import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 
-interface GalleryImage {
+const getOptimizedUrl = (rawUrl: string, width: number) => {
+  if (!rawUrl.includes('/upload/')) return rawUrl;
+  return rawUrl.replace('/upload/', `/upload/w_${width},f_auto,q_auto/`);
+};
+
+interface GalleryItem {
   id: number;
-  url: string;
+  rawUrl: string;
   category: string;
-  orientation: 'landscape' | 'portrait';
-  caption: string;
+  alt: string;
 }
 
-const galleryImages: GalleryImage[] = [
-  {
-    id: 1,
-    url: '',
-    category: 'Field Work',
-    orientation: 'landscape',
-    caption: 'Winter Clothing Drive — Jhalwa, Prayagraj — Dec 2023'
-  },
-  {
-    id: 2,
-    url: '',
-    category: 'Education',
-    orientation: 'portrait',
-    caption: 'Classroom Supplies Distribution — Ashok Nagar, Prayagraj — Jul 2023'
-  },
-  {
-    id: 3,
-    url: '',
-    category: 'Community Meals',
-    orientation: 'landscape',
-    caption: 'Makar Sankranti Community Feast — Saraswati Ghat, Prayagraj — Jan 2024'
-  },
-  {
-    id: 4,
-    url: '',
-    category: 'Medical',
-    orientation: 'portrait',
-    caption: 'Mobile Health Clinic Checkup — Naini Village, Prayagraj — Sep 2023'
-  },
-  {
-    id: 5,
-    url: '',
-    category: 'Field Work',
-    orientation: 'portrait',
-    caption: 'Youth Skill Assessment Drive — Malawa Khurd, Prayagraj — Oct 2023'
-  },
-  {
-    id: 6,
-    url: '',
-    category: 'Community Meals',
-    orientation: 'landscape',
-    caption: 'Weekly Ration Kit Distribution — Mumfordganj, Prayagraj — Nov 2023'
-  },
-  {
-    id: 7,
-    url: '',
-    category: 'Field Work',
-    orientation: 'landscape',
-    caption: 'Women Empowerment Meeting — Jhusi Block, Prayagraj — Feb 2024'
-  },
-  {
-    id: 8,
-    url: '',
-    category: 'Events',
-    orientation: 'portrait',
-    caption: 'Art of Living Community Satsang — Tagoretown, Prayagraj — Aug 2023'
-  },
-  {
-    id: 9,
-    url: '',
-    category: 'Education',
-    orientation: 'landscape',
-    caption: 'Evening Literacy Class Support — Kuriya District, Prayagraj — Jun 2023'
-  },
-  {
-    id: 10,
-    url: '',
-    category: 'Events',
-    orientation: 'portrait',
-    caption: 'Children\'s Day Painting Competition — Swaraj Bhawan, Prayagraj — Nov 2023'
-  },
-  {
-    id: 11,
-    url: '',
-    category: 'Medical',
-    orientation: 'landscape',
-    caption: 'Emergency Medical Relief Camp — Mumfordganj, Prayagraj — Aug 2023'
-  },
-  {
-    id: 12,
-    url: '',
-    category: 'Community Meals',
-    orientation: 'portrait',
-    caption: 'Festive Sweet Distribution — CNI Girls Home, Prayagraj — Oct 2023'
-  }
+const galleryData = [
+  // Old Age
+  { id: 1, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063732/Gemini_Generated_Image_xlaw1oxlaw1oxlaw_dnoxqb.png", category: "Old Age", alt: "Support and care for the elderly" },
+  { id: 2, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063732/Gemini_Generated_Image_e330y5e330y5e330_zemvoi.png", category: "Old Age", alt: "Community gathering for senior citizens" },
+  { id: 3, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063732/Gemini_Generated_Image_m4end3m4end3m4en_q3kw0b.png", category: "Old Age", alt: "Providing essential resources for the elderly" },
+  { id: 4, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063729/WhatsApp_Image_2026-09-21_at_11.44.27_PM_swh0pr.jpg", category: "Old Age", alt: "Volunteers interacting with old age community members" },
+  
+  // Community
+  { id: 5, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063750/WhatsApp_Image_2026-09-21_at_11.41.25_PM_loy74m.jpg", category: "Community", alt: "Community gathering and support initiative" },
+  { id: 6, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063749/WhatsApp_Image_2026-09-21_at_11.41.00_PM_nqxlo0.jpg", category: "Community", alt: "Volunteers engaging with local community members" },
+  { id: 7, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063749/WhatsApp_Image_2026-09-21_at_11.33.53_PM_dccs8q.jpg", category: "Community", alt: "Group photo of community impact drive" },
+  { id: 8, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063748/WhatsApp_Image_2026-09-21_at_7.58.12_PM_ticx7f.jpg", category: "Community", alt: "Distribution of resources in the community" },
+  { id: 9, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063748/WhatsApp_Image_2026-09-21_at_7.57.39_PM_xz0yki.jpg", category: "Community", alt: "Community members participating in local event" },
+  { id: 10, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063747/WhatsApp_Image_2026-08-03_at_9.05.52_PM_yelxl1.jpg", category: "Community", alt: "Raahat Foundation community building activities" },
+  { id: 11, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063747/WhatsApp_Image_2026-08-03_at_9.04.08_PM_jq2yae.jpg", category: "Community", alt: "Connecting with residents during a community drive" },
+  
+  // Nature
+  { id: 12, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063771/WhatsApp_Image_2026-09-21_at_11.41.44_PM_mt0uv3.jpg", category: "Nature", alt: "Nature preservation activities" },
+  { id: 13, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063770/WhatsApp_Image_2026-09-21_at_11.40.11_PM_vgyeqq.jpg", category: "Nature", alt: "Environmental support drive" },
+  { id: 14, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063770/WhatsApp_Image_2026-09-21_at_11.39.49_PM_wo3ofv.jpg", category: "Nature", alt: "Nature and environmental conservation" },
+  { id: 15, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063769/WhatsApp_Image_2026-09-21_at_11.39.27_PM_jpddqn.jpg", category: "Nature", alt: "Community engaging with nature" },
+  { id: 16, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063769/WhatsApp_Image_2026-09-21_at_11.36.13_PM_q6955d.jpg", category: "Nature", alt: "Group gathering for nature initiative" },
+
+  // Children
+  { id: 17, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063788/WhatsApp_Image_2026-09-21_at_11.42.10_PM_jj2lp1.jpg", category: "Children", alt: "Supporting children's education and well-being" },
+  { id: 18, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063788/WhatsApp_Image_2026-09-21_at_11.39.03_PM_f1sws2.jpg", category: "Children", alt: "Volunteers interacting with local children" },
+  { id: 19, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063787/WhatsApp_Image_2026-09-21_at_7.55.16_PM_af4t4y.jpg", category: "Children", alt: "Distribution drive for kids in the community" },
+  { id: 20, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063786/WhatsApp_Image_2026-09-20_at_11.25.27_AM1_y0tmxr.jpg", category: "Children", alt: "Spreading smiles among children" },
+  { id: 21, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063786/WhatsApp_Image_2026-09-20_at_11.25.27_AM_spjeiy.jpg", category: "Children", alt: "Group photo with children during a foundation event" },
+  { id: 22, rawUrl: "https://res.cloudinary.com/dri0jvjdw/image/upload/v1790063785/WhatsApp_Image_2026-04-18_at_4.59.15_PM_1_dyclb9.jpg", category: "Children", alt: "Children participating in community activities" }
 ];
 
 export default function Gallery() {
-  const [activeFilter, setActiveFilter] = useState('All');
+  const [activeCategory, setActiveCategory] = useState('All');
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
-  const filteredImages = activeFilter === 'All'
-    ? galleryImages
-    : galleryImages.filter(img => img.category === activeFilter);
+  const categories = ['All', 'Community', 'Nature', 'Children', 'Old Age'];
+
+  const filteredImages = activeCategory === 'All'
+    ? galleryData
+    : galleryData.filter((item) => item.category === activeCategory);
 
   const nextSlide = useCallback(() => {
     setSelectedImageIndex((prev) => (prev + 1) % filteredImages.length);
@@ -128,141 +79,123 @@ export default function Gallery() {
   }, [isOpen, nextSlide, prevSlide]);
 
   return (
-    <div className="w-full min-h-screen bg-[#ecf0ef] font-sans selection:bg-[#d1f843]/30 pt-32 md:pt-40 flex flex-col">
+    <div className="w-full min-h-screen bg-[#ecf0ef] font-sans selection:bg-[#d1f843]/30 pt-24 md:pt-36 flex flex-col">
       {/* Section 1: Main Header & Grid */}
-      <div className="max-w-7xl mx-auto flex flex-col items-center px-4 md:px-8 pb-16 lg:pb-24 w-full">
-        
-        {/* Header (Strict Copy) */}
-        <motion.div 
+      <div className="max-w-7xl mx-auto flex flex-col items-center px-5 md:px-8 pb-16 lg:pb-24 w-full">
+        {/* Header */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-10 md:mb-12 pt-4 md:pt-8"
+          className="text-center mb-10 md:mb-12 pt-4 md:pt-6"
         >
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#005840] mb-4 uppercase">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#005840] mb-4 uppercase">
             Moments of Impact
           </h1>
-          <p className="text-xs md:text-lg text-[#005840]/85 max-w-xl mx-auto font-medium leading-relaxed">
+          <p className="text-sm md:text-base text-[#005840]/80 max-w-xl mx-auto font-medium leading-relaxed">
             A glimpse into the lives we've touched and the communities we've built over the years.
           </p>
         </motion.div>
 
         {/* Category Filter Bar */}
-        <div className="relative w-full mb-10">
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="flex flex-nowrap overflow-x-auto gap-2 max-w-full pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-          >
-            {['All', 'Field Work', 'Medical', 'Education', 'Events', 'Community Meals'].map((category) => (
-              <button
-                key={category}
-                onClick={() => {
-                  setActiveFilter(category);
-                  setSelectedImageIndex(0); // Reset index on filter change to prevent out of bounds
-                }}
-                className={`px-5 py-2.5 rounded-full text-xs md:text-sm font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer whitespace-nowrap ${
-                  activeFilter === category
-                    ? 'bg-[#005840] text-[#d1f843] shadow-md scale-105'
-                    : 'bg-white text-[#005840] hover:bg-[#005840]/5 border border-[#005840]/5 shadow-sm'
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </motion.div>
-          {/* Subtle Right Fade */}
-          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#ecf0ef] to-transparent pointer-events-none" />
+        <div className="flex flex-wrap justify-center gap-3 mb-10">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => {
+                setActiveCategory(category);
+                setSelectedImageIndex(0);
+              }}
+              className={`rounded-full px-6 py-2.5 text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                activeCategory === category
+                  ? 'bg-[#d1f843] text-[#005840]'
+                  : 'bg-white/50 text-[#005840]/70 hover:bg-[#005840]/10 border border-[#005840]/10 backdrop-blur-md'
+              }`}
+            >
+              {category}
+            </button>
+          ))}
         </div>
 
-        {/* Masonry Layout */}
-        <motion.div 
-          layout
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="grid grid-cols-2 gap-2 w-full"
-        >
-          {filteredImages.map((image, index) => (
-            <div key={image.id} className="flex flex-col">
+        {/* Image Grid */}
+        <motion.div layout className="columns-2 md:columns-3 lg:columns-4 gap-4 md:gap-6 w-full">
+          <AnimatePresence mode="popLayout">
+            {filteredImages.map((item, index) => (
               <motion.div
+                key={item.id}
                 layout
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
                 onClick={() => {
                   setSelectedImageIndex(index);
                   setIsOpen(true);
                 }}
-                className="relative group cursor-pointer overflow-hidden rounded-lg shadow-sm border border-white/10 transition-all duration-300 hover:shadow-xl"
+                className="break-inside-avoid mb-4 md:mb-6 overflow-hidden rounded-[24px] bg-[#005840]/5 relative group cursor-pointer"
               >
-                {image.url ? (
-                  <img
-                    src={image.url}
-                    alt={image.caption}
-                    className="w-full aspect-square object-cover block group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className={`w-full bg-gray-200 group-hover:bg-gray-300 transition-colors duration-500 ${image.orientation === 'portrait' ? 'aspect-[3/4] md:aspect-[2/3]' : 'aspect-video md:aspect-[4/3]'}`}></div>
-                )}
+                <img
+                  src={getOptimizedUrl(item.rawUrl, 600)}
+                  alt={item.alt}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-auto block transition-transform duration-700 group-hover:scale-110"
+                />
               </motion.div>
-            </div>
-          ))}
+            ))}
+          </AnimatePresence>
         </motion.div>
-
       </div>
 
       {/* Section 2: Watch What We Do Video Section */}
-      <section className="w-full py-16 md:py-24 bg-gray-50 px-4 md:px-8 border-t border-b border-gray-100">
+      <section className="w-full py-16 md:py-24 bg-white px-5 md:px-8 border-t border-b border-gray-100">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-10 md:mb-12 flex flex-col items-center">
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-3xl md:text-5xl font-extrabold text-[#005840] tracking-tight mb-4 uppercase"
+              className="text-2xl md:text-4xl font-bold text-[#005840] tracking-tight mb-3 uppercase"
             >
               Watch What We Do
             </motion.h2>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-sm md:text-lg text-[#005840]/80 max-w-xl mx-auto font-medium"
+              className="text-sm md:text-base text-[#005840]/80 max-w-xl mx-auto font-medium"
             >
               On the ground with our core team.
             </motion.p>
           </div>
-          
-          <div className="grid grid-cols-2 gap-3 max-w-6xl mx-auto w-full">
-          <div className="aspect-video w-full min-w-[180px] bg-gray-800 rounded-2xl flex items-center justify-center relative overflow-hidden group/video shadow-sm hover:shadow-md transition-all cursor-pointer">
-              <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center transition-all duration-300 group-hover/video:bg-[#d1f843] group-hover/video:text-[#005840] text-white">
-                <Play className="w-8 h-8 fill-current" />
-              </div>
-            </div>
-            {/* Video 2 */}
-            <div className="aspect-video w-full min-w-[180px] bg-gray-800 rounded-2xl flex items-center justify-center relative overflow-hidden group/video shadow-sm hover:shadow-md transition-all cursor-pointer">
-              <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center transition-all duration-300 group-hover/video:bg-[#d1f843] group-hover/video:text-[#005840] text-white">
-                <Play className="w-8 h-8 fill-current" />
-              </div>
+
+          <div className="max-w-4xl mx-auto w-full">
+            <div className="aspect-video w-full rounded-[24px] relative overflow-hidden shadow-md border border-gray-100 bg-[#005840]/10">
+              <iframe 
+                className="absolute top-0 left-0 w-full h-full"
+                src="https://www.youtube.com/embed/zdo1WKw8mo0?si=6omGpGH2lXnWItbA" 
+                title="YouTube video player" 
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                referrerPolicy="strict-origin-when-cross-origin" 
+                allowFullScreen
+              ></iframe>
             </div>
           </div>
         </div>
       </section>
 
       {/* Section 3: Submit Your Photos CTA Bottom Strip */}
-      <section className="w-full bg-[#0D3826] text-white py-12 px-6 md:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between max-w-5xl mx-auto gap-6 w-full">
-          <div className="text-center md:text-left px-2">
-            <h2 className="text-xl md:text-3xl font-extrabold tracking-tight">Have photos from the field?</h2>
-            <p className="text-sm md:text-base text-white/85 mt-2 font-medium">If you volunteered with us recently, we’d love to feature your perspective.</p>
+      <section className="w-full bg-[#005840] text-white py-16 px-5 md:px-8">
+        <div className="flex flex-col md:flex-row items-center justify-between max-w-5xl mx-auto gap-6 w-full text-center md:text-left">
+          <div>
+            <h2 className="text-xl md:text-3xl font-bold tracking-tight">Have photos from the field?</h2>
+            <p className="text-xs md:text-sm text-white/80 mt-2 font-medium">If you volunteered with us recently, we'd love to feature your perspective.</p>
           </div>
           <div className="shrink-0 w-full md:w-auto">
-            <a 
-              href="mailto:info@raahatfoundation.org?subject=Field Photos Submission" 
-              className="inline-block w-full md:w-auto text-center bg-[#d1f843] text-[#0D3826] font-bold px-8 py-3 rounded-full hover:scale-105 transition-transform text-sm uppercase tracking-wider shadow-md"
+            <a
+              href="mailto:raahatfoundation29@gmail.com?subject=Field Photos Submission"
+              className="inline-block w-full md:w-auto text-center bg-[#d1f843] text-[#005840] font-bold px-8 py-3 rounded-full hover:brightness-95 transition-all text-xs md:text-sm uppercase tracking-wider shadow-sm"
             >
               Submit Your Photos
             </a>
@@ -273,14 +206,13 @@ export default function Gallery() {
       {/* Lightbox Modal */}
       <AnimatePresence>
         {isOpen && filteredImages[selectedImageIndex] && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center"
           >
-            {/* Close Button */}
-            <button 
+            <button
               onClick={closeModal}
               className="absolute top-4 right-4 md:top-8 md:right-8 z-50 p-3 text-white hover:text-[#d1f843] active:scale-95 transition-all cursor-pointer"
               aria-label="Close modal"
@@ -288,7 +220,6 @@ export default function Gallery() {
               <X className="w-8 h-8 md:w-10 md:h-10" />
             </button>
 
-            {/* Left/Right Navigation Buttons */}
             <button
               onClick={prevSlide}
               className="absolute left-4 top-1/2 -translate-y-1/2 z-50 p-3 text-white hover:text-[#d1f843] active:scale-95 transition-all cursor-pointer"
@@ -304,35 +235,17 @@ export default function Gallery() {
               <ChevronRight className="w-10 h-10 md:w-16 md:h-16" />
             </button>
 
-            {/* Image & Caption Container */}
             <div className="flex flex-col items-center justify-center max-w-[95vw] max-h-[90vh]">
-              {filteredImages[selectedImageIndex].url ? (
-                <motion.img 
-                  key={filteredImages[selectedImageIndex].id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3 }}
-                  src={filteredImages[selectedImageIndex].url} 
-                  alt={filteredImages[selectedImageIndex].caption}
-                  className="max-w-[90vw] max-h-[80vh] object-contain rounded-lg shadow-2xl"
-                />
-              ) : (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="w-[80vw] md:w-[60vw] h-[50vh] md:h-[70vh] bg-gray-200 rounded-lg shadow-2xl"
-                ></motion.div>
-              )}
-              <motion.p 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-white/90 text-center text-xs md:text-base font-semibold tracking-wide leading-relaxed mt-6 px-6 max-w-2xl"
-              >
-                {filteredImages[selectedImageIndex].caption}
-              </motion.p>
+              <motion.img
+                key={filteredImages[selectedImageIndex].id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                src={getOptimizedUrl(filteredImages[selectedImageIndex].rawUrl, 1200)}
+                alt={filteredImages[selectedImageIndex].alt}
+                className="max-w-[90vw] max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+              />
             </div>
           </motion.div>
         )}

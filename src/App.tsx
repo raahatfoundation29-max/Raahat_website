@@ -11,7 +11,6 @@ import Work from './pages/Work';
 import EventDetail from './pages/EventDetail';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
-import Gratitude from './pages/Gratitude';
 import GetInvolved from './pages/GetInvolved';
 import Legal from './pages/Legal';
 
@@ -28,8 +27,8 @@ export default function App() {
           <Route path="work/:id" element={<EventDetail />} />
           <Route path="gallery" element={<Gallery />} />
           <Route path="contact" element={<Contact />} />
-          <Route path="gratitude" element={<Gratitude />} />
-          <Route path="our-people" element={<Gratitude />} />
+          <Route path="gratitude" element={<About />} />
+          <Route path="our-people" element={<About />} />
           <Route path="get-involved" element={<GetInvolved />} />
           <Route path="legal" element={<Legal />} />
         </Route>
